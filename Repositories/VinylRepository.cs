@@ -1,29 +1,30 @@
 // .\Repositories\VinylRepository.cs
 using vinyls.Entities;
-using vinyls.Interfaces; // Asegúrate de incluir tu namespace de interfaces
+using vinyls.Interfaces;
+using vinyls.Data;
 
 namespace vinyls.Repositories
 {
     public class VinylRepository : IVinylRepository
     {
-        // La lista "dura" de vinilos
-        private readonly List<Vinyl> _vinyls;
+        private readonly VinylsDbContext _context;
 
-        public VinylRepository()
+        public VinylRepository(VinylsDbContext context)
         {
-            // Inicializa la lista con al menos 3 vinilos
-            _vinyls = new List<Vinyl>
-            {
-                new Vinyl { ID = 1, Name = "Abbey Road", Artist = "The Beatles", Year = 1969 },
-                new Vinyl { ID = 2, Name = "Dark Side Of The Moon", Artist = "Pink Floyd", Year = 1973 },
-                new Vinyl { ID = 3, Name = "Thriller", Artist = "Michael Jackson", Year = 1982 }
-            };
+            _context = context;
         }
 
-        // Implementa el método de la interfaz para devolver los vinilos
         public IEnumerable<Vinyl> GetAllVinyls()
         {
-            return _vinyls;
+            return _context.Vinyls.ToList();
+        }
+
+        // ¡NUEVO! Implementa el método para añadir un nuevo vinilo
+        public Vinyl AddVinyl(Vinyl vinyl)
+        {
+            _context.Vinyls.Add(vinyl); // Agrega el vinilo al DbSet
+            _context.SaveChanges();     // Guarda los cambios en la base de datos
+            return vinyl;               // Retorna el vinilo con el ID generado (si aplica)
         }
     }
 }

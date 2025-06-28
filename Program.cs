@@ -1,3 +1,7 @@
+// Program.cs
+using Microsoft.EntityFrameworkCore; // Añade esta directiva using
+using vinyls.Data; // Añade esta directiva using
+
 var builder = WebApplication.CreateBuilder(args);
 
 // --- Configuración de Servicios ---
@@ -5,9 +9,18 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<vinyls.Interfaces.IVinylRepository, vinyls.Repositories.VinylRepository>();
-// --- Fin de configuración de Servicios ---
+// **************************************************************************
+// ** Nuevo: Configuración de la base de datos con PostgreSQL y EF Core **
+// **************************************************************************
+builder.Services.AddDbContext<VinylsDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// **************************************************************************
+// ** Actualización: Cambiamos la inyección del repositorio para usar el DbContext **
+// **************************************************************************
+builder.Services.AddScoped<vinyls.Interfaces.IVinylRepository, vinyls.Repositories.VinylRepository>();
+
+// --- Fin de configuración de Servicios ---
 
 var app = builder.Build();
 
