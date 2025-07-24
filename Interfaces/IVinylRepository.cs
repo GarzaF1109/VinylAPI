@@ -5,10 +5,11 @@ namespace vinyls.Interfaces
 {
     public interface IVinylRepository
     {
-        // Define un método para obtener todos los vinilos
         IEnumerable<Vinyl> GetAllVinyls();
+        Vinyl AddVinyl(Vinyl vinyl);
         
-        // ¡NUEVO! Define un método para añadir un nuevo vinilo
-        Vinyl AddVinyl(Vinyl vinyl); 
+        // ¡NUEVO! Métodos para UPDATE y DELETE
+        Vinyl? UpdateVinyl(int id, Vinyl updatedVinyl);
+        bool DeleteVinyl(int id);
     }
 }

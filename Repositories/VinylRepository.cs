@@ -26,5 +26,39 @@ namespace vinyls.Repositories
             _context.SaveChanges();     // Guarda los cambios en la base de datos
             return vinyl;               // Retorna el vinilo con el ID generado (si aplica)
         }
+
+        // ¡NUEVO! Implementa el método para actualizar un vinilo
+        public Vinyl? UpdateVinyl(int id, Vinyl updatedVinyl)
+        {
+            var existingVinyl = _context.Vinyls.Find(id);
+            
+            if (existingVinyl == null)
+            {
+                return null;
+            }
+
+            // Actualiza las propiedades
+            existingVinyl.Name = updatedVinyl.Name;
+            existingVinyl.Artist = updatedVinyl.Artist;
+            existingVinyl.Year = updatedVinyl.Year;
+
+            _context.SaveChanges();
+            return existingVinyl;
+        }
+
+        // ¡NUEVO! Implementa el método para eliminar un vinilo
+        public bool DeleteVinyl(int id)
+        {
+            var vinyl = _context.Vinyls.Find(id);
+            
+            if (vinyl == null)
+            {
+                return false;
+            }
+
+            _context.Vinyls.Remove(vinyl);
+            _context.SaveChanges();
+            return true;
+        }
     }
 }
