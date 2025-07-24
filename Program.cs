@@ -10,6 +10,19 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // **************************************************************************
+// ** NUEVO: Configuración de CORS para permitir el frontend **
+// **************************************************************************
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowVuetifyApp", policy =>
+    {
+        policy.WithOrigins("http://localhost:3000", "http://localhost:5173", "http://localhost:8080") // Puertos comunes de Vite/Vue
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
+// **************************************************************************
 // ** Nuevo: Configuración de la base de datos con PostgreSQL y EF Core **
 // **************************************************************************
 builder.Services.AddDbContext<VinylsDbContext>(options =>
@@ -26,6 +39,11 @@ var app = builder.Build();
 
 // --- Configuración del Pipeline de Solicitudes HTTP (Middleware) ---
 
+// **************************************************************************
+// ** NUEVO: Usar CORS (debe ir antes de otros middlewares) **
+// **************************************************************************
+app.UseCors("AllowVuetifyApp");
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -41,9 +59,7 @@ else
     app.UseHttpsRedirection();
 }
 
-
 app.MapControllers();
-
 
 // **************************************************************************
 // ** Opcional: Puedes eliminar o mantener el código de WeatherForecast **
@@ -71,7 +87,6 @@ app.MapGet("/weatherforecast", () =>
 // **************************************************************************
 // ** Fin de código opcional de WeatherForecast **
 // **************************************************************************
-
 
 app.Run();
 
